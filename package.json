@@ -1,11 +1,24 @@
 {
-  "name": "fisheye-cafe",
-  "version": "0.1.0",
-  "dependencies": {
-    "express": "2.2.0",
-    "hiredis": "0.1.12",
-    "redis": "0.6.0",
-    "mustache": "0.3.1-dev"
-  }
+    "name": "fisheye-cafe",
+    "description": "",
+    "version": "0.1.0",
+    "author": {
+        "name": "Cat Chen",
+        "email": "catchen@catchen.me",
+        "web": "http://catchen.me"
+    }
+    "dependencies": {
+        "express": "2.2.0",
+        "hiredis": "0.1.12",
+        "redis": "0.6.0",
+        "mustache": "0.3.1-dev",
+        "underscore": "1.1.6"
+    }
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/CatChen/fisheye-cafe.git"
+        }
+    ]
 }
 
