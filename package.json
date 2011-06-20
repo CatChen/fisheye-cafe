@@ -1,6 +1,7 @@
 {
     "name": "fisheye-cafe",
-    "description": "",
+    "description": "Application for FishEye Cafe.",
+    "homepage": "http://",
     "version": "0.1.0",
     "author": {
         "name": "Cat Chen",
@@ -17,7 +18,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "https://github.com/CatChen/fisheye-cafe.git"
+            "url": "git@github.com:CatChen/fisheye-cafe.git"
         }
     ]
 }
