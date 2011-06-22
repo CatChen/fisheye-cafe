@@ -2,9 +2,7 @@ const express = require('express');
 const redis = require('redis');
 const url = require('url');
 
-var redisClient = getRedisClient();
-
-var getRedisClient = function() {
+var createRedisClient = function() {
     var redisClient;
     if (process.env.REDISTOGO_URL) {
         var redisURL = url.parse(process.env.REDISTOGO_URL);
@@ -16,7 +14,8 @@ var getRedisClient = function() {
     return redisClient;
 };
 
-var app = express.createServer(express.logger());
+var store = createRedisClient();
+var app = express.createServer(express.logger(), express.bodyParser());
 
 app.get('/', function(request, response) {
   response.send('Hello World!');
