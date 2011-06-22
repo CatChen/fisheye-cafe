@@ -32,9 +32,9 @@ app.get('/products/:id?', function(request, response) {
     }
 });
 
-app.put('/orders/', function(request, response) {});
+app.post('/orders/', function(request, response) {});
 
-app.post('/orders/:id', function(request, response) {});
+app.put('/orders/:id', function(request, response) {});
 
 app.get('/manage/', function(request, response) {
     response.send('Hello manager!');
@@ -44,9 +44,9 @@ app.get('/manage/users/:id?', function(request, response) {
     response.redirect('/manage/#!/users/' + (request.params.id || ''));
 });
 
-app.put('/manage/users/', function(request, response) {});
+app.post('/manage/users/', function(request, response) {});
 
-app.post('/manage/users/:id', function(request, response) {});
+app.put('/manage/users/:id', function(request, response) {});
 
 app.del('/manage/users/:id', function(request, response) {});
 
@@ -58,9 +58,9 @@ app.get('/manage/products/:id?', function(request, response) {
     }
 });
 
-app.put('/manage/products/', function(request, response) {});
+app.post('/manage/products/', function(request, response) {});
 
-app.post('/manage/products/:id', function(request, response) {});
+app.put('/manage/products/:id', function(request, response) {});
 
 app.del('/manage/products/:id', function(request, response) {});
 
@@ -72,9 +72,7 @@ app.get('/manage/orders/:id?', function(request, response) {
     }
 });
 
-app.put('/manage/orders/', function(request, response) {});
-
-app.post('/manage/orders/:id', function(request, response) {});
+app.put('/manage/orders/:id', function(request, response) {});
 
 var port = process.env.PORT || 3000;
 app.listen(port, function(){
