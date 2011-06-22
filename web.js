@@ -21,9 +21,21 @@ app.get('/', function(request, response) {
   response.send('Hello visitor!');
 });
 
-app.get('/products/:id?', function(request, response) { response.redirect('/#!/products/' + (request.params.id || '')); });
+app.get('/products/:id?', function(request, response) {
+    if (!request.header('X-Requested-With')) {
+        response.redirect('/#!/products/' + (request.params.id || '')); 
+    } else {
+        // TODO: render partial view
+    }
+});
 
-app.put('/orders/', function(request, response) { response.redirect('/#!/orders/'); });
+app.put('/orders/', function(request, response) {
+    if (!request.header('X-Requested-With')) {
+        response.redirect('/#!/orders/');
+    } else {
+        // TODO: render partial view
+    }
+});
 
 app.post('/orders/:id', function(request, response) {});
 
@@ -31,7 +43,9 @@ app.get('/manage/', function(request, response) {
     response.send('Hello manager!');
 });
 
-app.get('/manage/users/:id?', function(request, response) { response.redirect('/manage/#!/users/' + (request.params.id || '')); });
+app.get('/manage/users/:id?', function(request, response) {
+    response.redirect('/manage/#!/users/' + (request.params.id || ''));
+});
 
 app.put('/manage/users/', function(request, response) {});
 
@@ -39,7 +53,13 @@ app.post('/manage/users/:id', function(request, response) {});
 
 app.del('/manage/users/:id', function(request, response) {});
 
-app.get('/manage/products/:id?', function(request, response) { response.redirect('/manage/#!/products/' + (request.params.id || '')); });
+app.get('/manage/products/:id?', function(request, response) {
+    if (!request.header('X-Requested-With')) {
+        response.redirect('/manage/#!/products/' + (request.params.id || ''));
+    } else {
+        // TODO: render partial view
+    }
+});
 
 app.put('/manage/products/', function(request, response) {});
 
@@ -47,7 +67,13 @@ app.post('/manage/products/:id', function(request, response) {});
 
 app.del('/manage/products/:id', function(request, response) {});
 
-app.get('/manage/orders/:id?', function(request, response) { response.redirect('manage/#!/products/' + (request.params.id || '')); });
+app.get('/manage/orders/:id?', function(request, response) {
+    if (!request.header('X-Requested-With')) {
+        response.redirect('manage/#!/products/' + (request.params.id || ''));
+    } else {
+        // TODO: render partial view
+    }
+});
 
 app.put('/manage/orders/', function(request, response) {});
 
