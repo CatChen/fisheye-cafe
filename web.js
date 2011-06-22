@@ -1,6 +1,8 @@
-const express = require('express');
-const redis = require('redis');
 const url = require('url');
+const redis = require('redis');
+const express = require('express');
+const connectRedis = require('connect-redis')(express);
+const mustache = require('mustache');
 
 var createRedisClient = function() {
     var redisClient;
@@ -14,8 +16,42 @@ var createRedisClient = function() {
     return redisClient;
 };
 
+var createConnectRedis = function() {
+    var connectRedisStore;
+    if (process.env.REDISTOGO_URL) {
+        var redisURL = url.parse(process.env.REDISTOGO_URL);
+        connectRedisStore = new connectRedis({
+            port: redisURL.port,
+            host: redisURL.hostname,
+            pass: redisURL.auth.split(":")[1]
+        });
+    } else {
+        connectRedisStore = new connectRedis();
+    }
+    return connectRedisStore;
+};
+
 var store = createRedisClient();
-var app = express.createServer(express.logger(), express.bodyParser());
+var app = express.createServer();
+
+app.use(express.logger());
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.cookieParser());
+app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedis() }));
+app.use(app.router);
+app.use(express.static(__dirname + '/content'));
+app.use(express.errorHandler());
+
+
+//app.set("view engine", "mustache");
+app.register('.mustache', {
+    compile: function(template, options) {
+        return function(data) {
+            return mustache.to_html(template, data);
+        };
+    }
+});
 
 app.get('/', function(request, response) {
     if (request.query._escaped_fragment_) {
@@ -26,55 +62,69 @@ app.get('/', function(request, response) {
     }
 });
 
-app.get('/products/:id?', function(request, response) {
+app.get('/users(/:id)?', function(request, response) {
+    response.redirect('/#!/users/' + (request.params.id || ''));
+});
+
+app.post('/users/', function(request, response) {});
+
+app.put('/users/:id', function(request, response) {});
+
+app.del('/users/:id', function(request, response) {});
+
+app.get('/roles(/:id)?', function(request, response) {
+    response.redirect('/#!/roles/' + (request.params.id || ''));
+});
+
+app.post('/roles/', function(request, response) {});
+
+app.put('/roles/:id', function(request, response) {});
+
+app.del('/roles/:id', function(request, response) {});
+
+app.get('/products(/:id)?', function(request, response) {
     if (!request.header('X-Requested-With')) {
-        response.redirect('/#!/products/' + (request.params.id || '')); 
+        response.redirect('/#!/products/' + (request.params.id || ''));
     } else {
         // TODO: render partial view
     }
+});
+
+app.post('/products/', function(request, response) {});
+
+app.put('/products/:id', function(request, response) {});
+
+app.del('/products/:id', function(request, response) {});
+
+app.get('/orders(/:id?)', function(request, response) {
+    response.redirect('/#!/orders/' + (request.params.id || ''));
 });
 
 app.post('/orders/', function(request, response) {});
 
 app.put('/orders/:id', function(request, response) {});
 
-app.get('/manage/', function(request, response) {
-    response.send('Hello manager!');
+app.del('/orders/:id', function(request, response) {});
+
+app.get('/login', function(request, response) {
+    
 });
 
-app.get('/manage/users/:id?', function(request, response) {
-    response.redirect('/manage/#!/users/' + (request.params.id || ''));
+app.post('/login', function(request, response) {
+    
 });
 
-app.post('/manage/users/', function(request, response) {});
-
-app.put('/manage/users/:id', function(request, response) {});
-
-app.del('/manage/users/:id', function(request, response) {});
-
-app.get('/manage/products/:id?', function(request, response) {
-    if (!request.header('X-Requested-With')) {
-        response.redirect('/manage/#!/products/' + (request.params.id || ''));
-    } else {
-        // TODO: render partial view
-    }
+app.get('/logout', function(request, response) {
+    
 });
 
-app.post('/manage/products/', function(request, response) {});
-
-app.put('/manage/products/:id', function(request, response) {});
-
-app.del('/manage/products/:id', function(request, response) {});
-
-app.get('/manage/orders/:id?', function(request, response) {
-    if (!request.header('X-Requested-With')) {
-        response.redirect('manage/#!/products/' + (request.params.id || ''));
-    } else {
-        // TODO: render partial view
-    }
+app.get('/changepassword', function(request, response) {
+    
 });
 
-app.put('/manage/orders/:id', function(request, response) {});
+app.post('/changepassword', function(request, response) {
+    
+});
 
 var port = process.env.PORT || 3000;
 app.listen(port, function(){
