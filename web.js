@@ -18,18 +18,20 @@ var store = createRedisClient();
 var app = express.createServer(express.logger(), express.bodyParser());
 
 app.get('/', function(request, response) {
-  response.send('Hello World!');
+  response.send('Hello visitor!');
 });
 
-app.get('/products/:id?', function(request, response) { response.send('products: ' + request.params.id); });
+app.get('/products/:id?', function(request, response) { response.redirect('/#!/products/' + (request.params.id || '')); });
 
-app.put('/orders/', function(request, response) {});
+app.put('/orders/', function(request, response) { response.redirect('/#!/orders/'); });
 
 app.post('/orders/:id', function(request, response) {});
 
-app.get('/manage/', function(request, response) {});
+app.get('/manage/', function(request, response) {
+    response.send('Hello manager!');
+});
 
-app.get('/manage/users/:id?', function(request, response) {});
+app.get('/manage/users/:id?', function(request, response) { response.redirect('/manage/#!/users/' + (request.params.id || '')); });
 
 app.put('/manage/users/', function(request, response) {});
 
@@ -37,7 +39,7 @@ app.post('/manage/users/:id', function(request, response) {});
 
 app.del('/manage/users/:id', function(request, response) {});
 
-app.get('/manage/products/:id?', function(request, response) {});
+app.get('/manage/products/:id?', function(request, response) { response.redirect('/manage/#!/products/' + (request.params.id || '')); });
 
 app.put('/manage/products/', function(request, response) {});
 
@@ -45,7 +47,7 @@ app.post('/manage/products/:id', function(request, response) {});
 
 app.del('/manage/products/:id', function(request, response) {});
 
-app.get('/manage/orders/:id?', function(request, response) {});
+app.get('/manage/orders/:id?', function(request, response) { response.redirect('manage/#!/products/' + (request.params.id || '')); });
 
 app.put('/manage/orders/', function(request, response) {});
 
