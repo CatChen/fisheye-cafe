@@ -6,7 +6,7 @@ var createRedisClient = function() {
     var redisClient;
     if (process.env.REDISTOGO_URL) {
         var redisURL = url.parse(process.env.REDISTOGO_URL);
-        redisClient = redis.createClient(rtg.port, rtg.hostname);
+        redisClient = redis.createClient(redisURL.port, redisURL.hostname);
         redisClient.auth(redisURL.auth.split(":")[1]);
     } else {
         redisClient = redis.createClient();
