@@ -19,6 +19,9 @@ var app = express.createServer(express.logger(), express.bodyParser());
 
 app.get('/', function(request, response) {
   response.send('Hello visitor!');
+  if (request.params._escaped_fragment_) {
+      // TODO: handle Google's request
+  }
 });
 
 app.get('/products/:id?', function(request, response) {
@@ -29,13 +32,7 @@ app.get('/products/:id?', function(request, response) {
     }
 });
 
-app.put('/orders/', function(request, response) {
-    if (!request.header('X-Requested-With')) {
-        response.redirect('/#!/orders/');
-    } else {
-        // TODO: render partial view
-    }
-});
+app.put('/orders/', function(request, response) {});
 
 app.post('/orders/:id', function(request, response) {});
 
