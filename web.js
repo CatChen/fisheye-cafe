@@ -41,7 +41,7 @@ app.use(express.cookieParser());
 app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedis() }));
 app.use(app.router);
 app.use(express.static(__dirname + '/content'));
-app.use(express.errorHandler());
+app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
 
 
 //app.set("view engine", "mustache");
