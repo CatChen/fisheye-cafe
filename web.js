@@ -18,10 +18,12 @@ var store = createRedisClient();
 var app = express.createServer(express.logger(), express.bodyParser());
 
 app.get('/', function(request, response) {
-  response.send('Hello visitor!');
-  if (request.params._escaped_fragment_) {
-      // TODO: handle Google's request
-  }
+    if (request.query._escaped_fragment_) {
+        response.send('Hello bot!');
+        // TODO: handle Google's request
+    } else {
+        response.send('Hello visitor!');
+    }
 });
 
 app.get('/products/:id?', function(request, response) {
