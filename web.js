@@ -21,6 +21,36 @@ app.get('/', function(request, response) {
   response.send('Hello World!');
 });
 
+app.get('/products/:id?', function(request, response) { response.send('products: ' + request.params.id); });
+
+app.put('/orders/', function(request, response) {});
+
+app.post('/orders/:id', function(request, response) {});
+
+app.get('/manage/', function(request, response) {});
+
+app.get('/manage/users/:id?', function(request, response) {});
+
+app.put('/manage/users/', function(request, response) {});
+
+app.post('/manage/users/:id', function(request, response) {});
+
+app.del('/manage/users/:id', function(request, response) {});
+
+app.get('/manage/products/:id?', function(request, response) {});
+
+app.put('/manage/products/', function(request, response) {});
+
+app.post('/manage/products/:id', function(request, response) {});
+
+app.del('/manage/products/:id', function(request, response) {});
+
+app.get('/manage/orders/:id?', function(request, response) {});
+
+app.put('/manage/orders/', function(request, response) {});
+
+app.post('/manage/orders/:id', function(request, response) {});
+
 var port = process.env.PORT || 3000;
 app.listen(port, function(){
   console.log("Listening on " + port);
