@@ -32,6 +32,7 @@ var createConnectRedis = function() {
 };
 
 var store = createRedisClient();
+var userAndRole = require('redis-user-and-role')(store);
 var app = express.createServer();
 
 app.use(express.logger());
@@ -42,7 +43,6 @@ app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedi
 app.use(app.router);
 app.use(express.static(__dirname + '/content'));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
-
 
 //app.set("view engine", "mustache");
 app.register('.mustache', {
