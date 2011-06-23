@@ -114,7 +114,7 @@ app.post('/login', function(request, response) {
     
 });
 
-app.get('/logout', function(request, response) {
+app.post('/logout', function(request, response) {
     
 });
 
