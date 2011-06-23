@@ -15,7 +15,8 @@
         "connect-redis": "1.0.6",
         "mustache": "0.3.1-dev",
         "underscore": "1.1.6",
-        "backbone": "0.3.2"
+        "backbone": "0.3.2",
+        "redis-user-and-role": ">=0.1.0"
     },
     "repositories": [
         {
