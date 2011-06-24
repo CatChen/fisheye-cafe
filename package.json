@@ -16,7 +16,7 @@
         "mustache": "0.3.1-dev",
         "underscore": "1.1.6",
         "backbone": "0.3.2",
-        "redis-user": ">=0.1.0"
+        "redis-user": ">=0.2.0"
     },
     "repositories": [
         {
