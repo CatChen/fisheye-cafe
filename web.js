@@ -32,7 +32,7 @@ var createConnectRedis = function() {
 };
 
 var store = createRedisClient();
-var userAndRole = require('redis-user-and-role')(store);
+var user = require('redis')(store);
 var app = express.createServer();
 
 app.use(express.logger());
