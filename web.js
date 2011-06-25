@@ -42,7 +42,7 @@ app.use(express.cookieParser());
 app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedis() }));
 app.use(app.router);
 app.use(express.static(__dirname + '/content'));
-app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
+app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // options are not for production
 
 app.set("view engine", "mustache");
 app.register('.mustache', {
@@ -58,7 +58,16 @@ app.get('/', function(request, response) {
         response.send('Hello bot!');
         // TODO: handle Google's request
     } else {
-        response.render(__dirname + '/views/layout', { title: 'Welcome' });
+        response.render(__dirname + '/views/layout', {
+            title: 'Welcome',
+            user: {
+                email: 'catchen@catchen.me',
+                roles: {
+                    manager: true,
+                    employee: true
+                }
+            }
+        });
     }
 });
 
@@ -115,14 +124,23 @@ app.post('/login', function(request, response) {
 });
 
 app.post('/logout', function(request, response) {
+    request.session.destroy();
+    response.redirect('/');
+});
+
+app.get('/updatepassword', function(request, response) {
     
 });
 
-app.get('/changepassword', function(request, response) {
+app.post('/updatepassword', function(request, response) {
     
 });
 
-app.post('/changepassword', function(request, response) {
+app.get('/createuser', function(request, response) {
+    
+});
+
+app.post('/createuser', function(request, response) {
     
 });
 

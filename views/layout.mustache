@@ -4,8 +4,82 @@
 	<meta charset="UTF-8">
 	<title>{{#title}}{{title}} - {{/title}}FishEye Cafe</title>
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+	<script type="text/javascript">
+	    $().ready(function() {
+    	    $('#logout').click(function(event) {
+    	        event.preventDefault();
+    	        var form = $('<form action="/logout" method="post"></form>');
+    	        $(document.body).append(form);
+    	        form.submit();
+    	    });
+	    });
+	</script>
+	<script type="text/javascript">
+	    var exampleData = {
+	        title: 'Menu', // optional
+	        user: { // optional, only when logged in
+	            email: 'catchen@catchen.me',
+	            roles: { // optional, only when user has roles
+	                manager: true, // optional, only when user has this role
+	                employee: true, // optional, only when user has this role
+	                visitor: true // optional, only when user has this role
+	            }
+	        }
+	    }
+	</script>
+	<style type="text/css">
+#visitorLogin {
+    display: none;
+}
+	</style>
 </head>
 <body>
-	
+	{{#user}}
+	    <div>
+	        <nav>
+	            <ul>
+	                {{#roles}}
+	                    {{#manager}}
+	                        <li><a href='/createuser'>Create User</a></li>
+	                    {{/manager}}
+	                    {{#employee}}
+	                        <li><a href='/updatepassword'>Update Password</a></li>
+	                    {{/employee}}
+	                {{/roles}}
+                    <li>
+                        <a id="logout" href='?'>
+                            {{#roles}}
+                                {{#visitor}}
+                                    Goodbye
+                                {{/visitor}}
+                                {{^visitor}}
+                                    Logout
+                                {{/visitor}}
+                            {{/roles}}
+                            {{^roles}}
+                                Logout
+                            {{/roles}}
+                        </a>
+                    </li>
+	            </ul>
+	        </nav>
+	    </div>
+	{{/user}}
+	{{^user}}
+	    <div>
+	        <nav>
+	            <ul>
+	                <li><a href='/login'>Employee Login</a></li>
+	            </ul>
+	        </nav>
+	        <div>
+	            <!-- Seat map here -->
+	        </div>
+	        <form id="visitorLogin" action="/login" method="post">
+	            <input type="text" id="email" name="email" value="" />
+	            <input type="password" id="password" name="password" value="" />
+	        </form>
+	    </div>
+	{{/user}}
 </body>
 </html>
