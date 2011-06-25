@@ -44,7 +44,7 @@ app.use(app.router);
 app.use(express.static(__dirname + '/content'));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true }));
 
-//app.set("view engine", "mustache");
+app.set("view engine", "mustache");
 app.register('.mustache', {
     compile: function(template, options) {
         return function(data) {
@@ -58,7 +58,7 @@ app.get('/', function(request, response) {
         response.send('Hello bot!');
         // TODO: handle Google's request
     } else {
-        response.send('Hello visitor!');
+        response.render(__dirname + '/views/layout', { title: 'Welcome' });
     }
 });
 
