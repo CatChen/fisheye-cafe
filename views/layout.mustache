@@ -24,13 +24,19 @@
 	                employee: true, // optional, only when user has this role
 	                visitor: true // optional, only when user has this role
 	            }
+	        },
+	        content: { // optional, only if non-root content is selected
+	            users: {}, // optional, only if users is selected
+	            roles: {}, // optional, only if roles is selected
+	            products: {}, // optional, only if products is selected
+	            orders: {}, // optional, only if orders is selected
+	            login: {}, // optional, only if login is selected
+	            updatepassword: {}, // optional, only if updatepassword is selected
+	            createuser: {} // optional, only if createuser is selected
 	        }
 	    }
 	</script>
 	<style type="text/css">
-#visitorLogin {
-    display: none;
-}
 	</style>
 </head>
 <body>
@@ -63,6 +69,35 @@
                     </li>
 	            </ul>
 	        </nav>
+	        <div>
+	            <!-- main content -->
+	            {{#content}}
+	                {{#users}}
+	                    {{>users}}
+	                {{/users}}
+	                {{#roles}}
+	                    {{>roles}}
+	                {{/roles}}
+	                {{#products}}
+	                    {{>products}}
+	                {{/products}}
+	                {{#orders}}
+	                    {{>orders}}
+	                {{/orders}}
+	                {{#login}}
+                        {{>login}}
+	                {{/login}}
+	                {{#updatepassword}}
+	                    {{>updatepassword}}
+	                {{/updatepassword}}
+	                {{#createuser}}
+	                    {{>createuser}}
+	                {{/createuser}}
+	            {{/content}}
+	            {{^content}}
+	                <!-- root path -->
+	            {{/content}}
+	        </div>
 	    </div>
 	{{/user}}
 	{{^user}}
@@ -73,12 +108,8 @@
 	            </ul>
 	        </nav>
 	        <div>
-	            <!-- Seat map here -->
+	            <!-- Seat map -->
 	        </div>
-	        <form id="visitorLogin" action="/login" method="post">
-	            <input type="text" id="email" name="email" value="" />
-	            <input type="password" id="password" name="password" value="" />
-	        </form>
 	    </div>
 	{{/user}}
 </body>

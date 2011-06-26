@@ -45,10 +45,16 @@ app.use(express.static(__dirname + '/content'));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // options are not for production
 
 app.set("view engine", "mustache");
+app.set("views", __dirname + '/views/');
+app.set("view options", {layout: false});
 app.register('.mustache', {
     compile: function(template, options) {
         return function(data) {
-            return mustache.to_html(template, data);
+            try {
+                return mustache.to_html(template, data);
+            } catch(error) {
+                console.log(error);
+            }
         };
     }
 });
@@ -58,7 +64,7 @@ app.get('/', function(request, response) {
         response.send('Hello bot!');
         // TODO: handle Google's request
     } else {
-        response.render(__dirname + '/views/layout', {
+        response.render('layout', {
             title: 'Welcome',
             user: {
                 email: 'catchen@catchen.me',
@@ -116,7 +122,18 @@ app.put('/orders/:id', function(request, response) {});
 app.del('/orders/:id', function(request, response) {});
 
 app.get('/login', function(request, response) {
-    
+    response.render('layout', {
+        title: 'Login',
+        user: {
+            email: 'catchen@catchen.me',
+            roles: {
+                visitor: true
+            }
+        },
+        content: {
+            login: {}
+        }
+    });
 });
 
 app.post('/login', function(request, response) {
