@@ -1,1 +1,16 @@
-This is the login page! {{name}}
+{{#error}}
+    <div class="error">{{message}}</div>
+{{/error}}
+<form action="/login" method="post">
+    <div>
+        <label for="email">email</label>
+        <input id="email" name="email" type="email" value="{{email}}" />
+    </div>
+    <div>
+        <label for="password">password</label>
+        <input id="password" name="password" type="password" />
+    </div>
+    <div>
+        <input id="submit" name="submit" type="submit" value="login" />
+    </div>
+</form>

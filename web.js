@@ -1,4 +1,5 @@
 const url = require('url');
+const path = require('path');
 const redis = require('redis');
 const express = require('express');
 const connectRedis = require('connect-redis')(express);
@@ -15,36 +16,37 @@ var createRedisClient = function() {
     return redisClient;
 };
 
-var createConnectRedis = function() {
-    var connectRedisStore;
+var createConnectRedisClient = function() {
+    var connectRedisClient;
     if (process.env.REDISTOGO_URL) {
         var redisURL = url.parse(process.env.REDISTOGO_URL);
-        connectRedisStore = new connectRedis({
+        connectRedisClient = new connectRedis({
             port: redisURL.port,
             host: redisURL.hostname,
             pass: redisURL.auth.split(":")[1]
         });
     } else {
-        connectRedisStore = new connectRedis();
+        connectRedisClient = new connectRedis();
     }
-    return connectRedisStore;
+    return connectRedisClient;
 };
 
-var store = createRedisClient();
-var user = require('redis-user')(store);
+const store = createRedisClient();
+const user = require('redis-user')(store);
+
 var app = express.createServer();
 
 app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedis() }));
+app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedisClient() }));
 app.use(app.router);
-app.use(express.static(__dirname + '/content'));
+app.use(express.static(path.join(__dirname, 'content')));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // options are not for production
 
 app.set("view engine", "mustache");
-app.set("views", __dirname + '/views/');
+app.set("views", path.join(__dirname, 'views'));
 app.register(".mustache", require('stache'));
 
 app.get('/', function(request, response) {
@@ -52,15 +54,9 @@ app.get('/', function(request, response) {
         response.send('Hello bot!');
         // TODO: handle Google's request
     } else {
-        response.render('layout', {
+        response.render('index', {
             title: 'Welcome',
-            user: {
-                email: 'catchen@catchen.me',
-                roles: {
-                    manager: true,
-                    employee: true
-                }
-            }
+            user: request.session.user
         });
     }
 });
@@ -114,7 +110,35 @@ app.get('/login', function(request, response) {
 });
 
 app.post('/login', function(request, response) {
-    
+    var email = request.body.email;
+    var password = request.body.password;
+    user.validateUser(email, password, function(validated) {
+        if (validated) {
+            var sessionUser = {
+                email: email,
+                roles: {}
+            };
+            /* TODO: turn this into parallel by using Async */
+            user.role.isUserInRole(email, 'manager', function(result) {
+                sessionUser.roles.manager = result; request.session.user = sessionUser;
+                user.role.isUserInRole(email, 'employee', function(result) {
+                    sessionUser.roles.employee = result; request.session.user = sessionUser;
+                    user.role.isUserInRole(email, 'visitor', function(result) {
+                        sessionUser.roles.visitor = result; request.session.user = sessionUser;
+                        request.session.user = sessionUser;
+                        response.redirect('/');
+                    });
+                });
+            });
+        } else {
+            response.render('login', {
+                email: email,
+                error: {
+                    message: 'incorrect email or password'
+                }
+            });
+        }
+    })
 });
 
 app.post('/logout', function(request, response) {
