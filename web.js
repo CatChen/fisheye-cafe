@@ -2,7 +2,6 @@ const url = require('url');
 const redis = require('redis');
 const express = require('express');
 const connectRedis = require('connect-redis')(express);
-const mustache = require('mustache');
 
 var createRedisClient = function() {
     var redisClient;
@@ -46,18 +45,7 @@ app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // opt
 
 app.set("view engine", "mustache");
 app.set("views", __dirname + '/views/');
-app.set("view options", {layout: false});
-app.register('.mustache', {
-    compile: function(template, options) {
-        return function(data) {
-            try {
-                return mustache.to_html(template, data);
-            } catch(error) {
-                console.log(error);
-            }
-        };
-    }
-});
+app.register(".mustache", require('stache'));
 
 app.get('/', function(request, response) {
     if (request.query._escaped_fragment_) {
@@ -122,18 +110,7 @@ app.put('/orders/:id', function(request, response) {});
 app.del('/orders/:id', function(request, response) {});
 
 app.get('/login', function(request, response) {
-    response.render('layout', {
-        title: 'Login',
-        user: {
-            email: 'catchen@catchen.me',
-            roles: {
-                visitor: true
-            }
-        },
-        content: {
-            login: {}
-        }
-    });
+    response.render('login', {});
 });
 
 app.post('/login', function(request, response) {
