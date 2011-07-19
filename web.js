@@ -65,7 +65,16 @@ app.get('/', function(request, response) {
 });
 
 app.get('/users(/:id)?', function(request, response) {
-    response.redirect('/#!/users/' + (request.params.id || ''));
+    if (request.header('X-Requested-With') == 'XMLHttpRequest') {
+        if (request.session.user.roles.manager) {
+            
+        } else {
+            /* unauthorized */
+            response.send(403);
+        }
+    } else {
+        response.redirect('/#!/users/' + (request.params.id || ''));
+    }
 });
 
 app.post('/users/', function(request, response) {});
@@ -75,7 +84,11 @@ app.put('/users/:id', function(request, response) {});
 app.del('/users/:id', function(request, response) {});
 
 app.get('/roles(/:id)?', function(request, response) {
-    response.redirect('/#!/roles/' + (request.params.id || ''));
+    if (request.header('X-Requested-With') == 'XMLHttpRequest') {
+        // TODO: send JSON
+    } else {
+        response.redirect('/#!/roles/' + (request.params.id || ''));
+    }
 });
 
 app.post('/roles/', function(request, response) {});
@@ -85,10 +98,10 @@ app.put('/roles/:id', function(request, response) {});
 app.del('/roles/:id', function(request, response) {});
 
 app.get('/products(/:id)?', function(request, response) {
-    if (!request.header('X-Requested-With')) {
-        response.redirect('/#!/products/' + (request.params.id || ''));
+    if (request.header('X-Requested-With') == 'XMLHttpRequest') {
+        // TODO: send JSON
     } else {
-        // TODO: render partial view
+        response.redirect('/#!/products/' + (request.params.id || ''));
     }
 });
 
@@ -99,7 +112,11 @@ app.put('/products/:id', function(request, response) {});
 app.del('/products/:id', function(request, response) {});
 
 app.get('/orders(/:id?)', function(request, response) {
-    response.redirect('/#!/orders/' + (request.params.id || ''));
+    if (request.header('X-Requested-With') == 'XMLHttpRequest') {
+        // TODO: send JSON
+    } else {
+        response.redirect('/#!/orders/' + (request.params.id || ''));
+    }
 });
 
 app.post('/orders/', function(request, response) {});

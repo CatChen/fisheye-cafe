@@ -1,7 +1,15 @@
-var User = Backbone.Model.extend({});
-var Role = Backbone.Model.extend({});
-var Product = Backbone.Model.extend({});
-var Order = Backbone.Model.extend({});
+var User = Backbone.Model.extend({
+    urlRoot: '/users'
+});
+var Role = Backbone.Model.extend({
+    urlRoot: '/roles'
+});
+var Product = Backbone.Model.extend({
+    urlRoot: '/products'
+});
+var Order = Backbone.Model.extend({
+    urlRoot: '/orders'
+});
 
 var Users = Backbone.Collection.extend({
   model: User
