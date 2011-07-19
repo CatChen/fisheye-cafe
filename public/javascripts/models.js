@@ -12,21 +12,25 @@ var Order = Backbone.Model.extend({
 });
 
 var Users = Backbone.Collection.extend({
-  model: User
+  model: User,
+  url: '/users'
 });
 var users = new Users();
 
 var Roles = Backbone.Collection.extend({
-  model: Role
+  model: Role,
+  url: '/roles'
 });
 var roles = new Roles();
 
 var Products = Backbone.Collection.extend({
-  model: Product
+  model: Product,
+  url: '/products'
 });
 var products = new Products();
 
 var Orders = Backbone.Collection.extend({
-  model: Order
+  model: Order,
+  url: '/orders'
 });
 var orders = new Orders();
