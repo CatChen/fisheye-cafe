@@ -16,7 +16,7 @@
         "stache": ">=0.1.0",
         "underscore": ">=1.1.6",
         "backbone": ">=0.3.2",
-        "redis-user": ">=0.2.2",
+        "redis-user": ">=0.2.3",
         "jshelpers": ">=1.0.3"
     },
     "repositories": [
