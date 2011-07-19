@@ -33,8 +33,9 @@ var createConnectRedisClient = function() {
     return connectRedisClient;
 };
 
-const store = createRedisClient();
-const user = require('redis-user')(store, true); /* use Async = true */
+const redisClient = createRedisClient();
+const connectRedisClient = createConnectRedisClient();
+const user = require('redis-user')(redisClient, true); /* use Async = true */
 
 var app = express.createServer();
 
@@ -42,7 +43,7 @@ app.use(express.logger());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(express.cookieParser());
-app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedisClient() }));
+app.use(express.session({ secret: "catchen@catchen.me", store: connectRedisClient }));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // options are not for production
