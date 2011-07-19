@@ -59,7 +59,7 @@ app.get('/', function(request, response) {
     } else {
         response.render('index', {
             title: 'Welcome',
-            user: request.session.user
+            session: request.session.user
         });
     }
 });

@@ -6,6 +6,17 @@
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
 	<script type="text/javascript" src="/javascripts/underscore.js"></script>
 	<script type="text/javascript" src="/javascripts/backbone.js"></script>
+	<script type="text/javascript" src="/javascripts/models.js"></script>
+	{{#session}}<script type="text/javascript">
+	        var session = {
+	            email: '{{email}}'
+	            {{#roles}},roles: {
+	                manager: {{manager}},
+	                employee: {{employee}},
+	                visitor: {{visitor}}
+	            }{{/roles}}
+	        }
+	</script>{{/session}}
 	<script type="text/javascript">
 	    $().ready(function() {
     	    $('#logout').click(function(event) {
@@ -35,7 +46,7 @@
 <body>
     <nav>
         <ul>
-        	{{#user}}
+        	{{#session}}
                 {{#roles}}
                     {{#manager}}
                         <li><a href='/users/'>manage user</a></li>
@@ -59,10 +70,10 @@
                         {{/roles}}
                     </a>
                 </li>
-        	{{/user}}
-        	{{^user}}
+        	{{/session}}
+        	{{^session}}
                 <li><a href='/login'>employee login</a></li>
-        	{{/user}}
+        	{{/session}}
         </ul>
     </nav>
     {{{yield}}}
