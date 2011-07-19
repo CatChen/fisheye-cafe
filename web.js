@@ -44,7 +44,7 @@ app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({ secret: "catchen@catchen.me", store: createConnectRedisClient() }));
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'content')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.errorHandler({ showStack: true, dumpExceptions: true })); // options are not for production
 
 app.set("view engine", "mustache");
