@@ -95,11 +95,38 @@ app.get('/users(/:id)?', function(request, response) {
     }
 });
 
-app.post('/users/', function(request, response) {});
+app.post('/users/', function(request, response) {
+    user.createUserAsync(request.params.username, request.params.password)
+        .addCallback(function(result) {
+            if (result) {
+                response.send(200);
+            } else {
+                response.send(500);
+            }
+        });
+});
 
-app.put('/users/:id', function(request, response) {});
+app.put('/users/:id', function(request, response) {
+    /* not allow */
+    response.header('Allow', 'GET, POST, DELETE');
+    response.send(405);
+});
 
-app.del('/users/:id', function(request, response) {});
+app.del('/users/:id', function(request, response) {
+    Async
+        .chain()
+        .go(parseInt(request.params.id))
+        .next(user.getUserAsync)
+        .next(function(user) { return user.email; })
+        .next(user.deleteUserAsync)
+        .next(function(result) {
+            if (result) {
+                response.send(200);
+            } else {
+                response.send(500);
+            }
+        });
+});
 
 app.get('/roles(/:id)?', function(request, response) {
     if (request.header('X-Requested-With') == 'XMLHttpRequest') {
