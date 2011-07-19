@@ -67,7 +67,25 @@ app.get('/', function(request, response) {
 app.get('/users(/:id)?', function(request, response) {
     if (request.header('X-Requested-With') == 'XMLHttpRequest') {
         if (request.session.user.roles.manager) {
-            
+            if (!request.params.id) {
+                user.listUsersAsync()
+                    .addCallback(function(users) {
+                        if (users) {
+                            response.send(JSON.stringify(users));
+                        } else {
+                            response.send(404);
+                        }
+                    });
+            } else {
+                user.getUserAsync(parseInt(request.params.id))
+                    .addCallback(function(user) {
+                        if (user) {
+                            response.send(JSON.stringify(user));
+                        } else {
+                            response.send(404);
+                        }
+                    });
+            }
         } else {
             /* unauthorized */
             response.send(403);
