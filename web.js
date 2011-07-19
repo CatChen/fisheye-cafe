@@ -154,11 +154,11 @@ app.post('/updatepassword', function(request, response) {
     
 });
 
-app.get('/createuser', function(request, response) {
+app.get('/resetpassword', function(request, response) {
     
 });
 
-app.post('/createuser', function(request, response) {
+app.post('/resetpassword', function(request, response) {
     
 });
 
