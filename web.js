@@ -1,3 +1,5 @@
+const Async = require('jshelpers').Async;
+
 const url = require('url');
 const path = require('path');
 const redis = require('redis');
@@ -32,7 +34,7 @@ var createConnectRedisClient = function() {
 };
 
 const store = createRedisClient();
-const user = require('redis-user')(store);
+const user = require('redis-user')(store, true); /* use Async = true */
 
 var app = express.createServer();
 
@@ -119,17 +121,19 @@ app.post('/login', function(request, response) {
                 roles: {}
             };
             /* TODO: turn this into parallel by using Async */
-            user.role.isUserInRole(email, 'manager', function(result) {
-                sessionUser.roles.manager = result; request.session.user = sessionUser;
-                user.role.isUserInRole(email, 'employee', function(result) {
-                    sessionUser.roles.employee = result; request.session.user = sessionUser;
-                    user.role.isUserInRole(email, 'visitor', function(result) {
-                        sessionUser.roles.visitor = result; request.session.user = sessionUser;
-                        request.session.user = sessionUser;
-                        response.redirect('/');
-                    });
+            Async
+                .collect([
+                    function() { return user.role.isUserInRoleAsync(email, 'manager')
+                        .addCallback(function(result) { sessionUser.roles.manager = result; request.session.user = sessionUser; })},
+                    function() { return user.role.isUserInRoleAsync(email, 'employee')
+                        .addCallback(function(result) { sessionUser.roles.employee = result; request.session.user = sessionUser; })},
+                    function() { return user.role.isUserInRoleAsync(email, 'visitor')
+                        .addCallback(function(result) { sessionUser.roles.visitor = result; request.session.user = sessionUser; })}
+                ])
+                .addCallback(function(results) {
+                    request.session.user = sessionUser;
+                    response.redirect('/');
                 });
-            });
         } else {
             response.render('login', {
                 email: email,
