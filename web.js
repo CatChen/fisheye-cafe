@@ -96,51 +96,108 @@ app.get('/users(/:id)?', function(request, response) {
 });
 
 app.post('/users/', function(request, response) {
-    user.createUserAsync(request.params.username, request.params.password)
-        .addCallback(function(result) {
-            if (result) {
-                response.send(201);
-            } else {
-                response.send(500);
-            }
-        });
+    if (request.session.user.roles.manager) {
+        user.createUserAsync(request.params.email, request.params.password)
+            .addCallback(function(result) {
+                if (result) {
+                    /* TODO: should send the newly created user back */
+                    response.send(201);
+                } else {
+                    response.send(500);
+                }
+            });
+    } else {
+        /* unauthorized */
+        response.send(403);
+    }
 });
 
 app.put('/users/:id', function(request, response) {
-    /* not allow */
-    response.header('Allow', 'GET, POST, DELETE');
-    response.send(405);
+    if (request.session.user.roles.manager || (request.session.user.roles.employee && request.session.user.email == request.params.email)) {
+        user.updateUserPasswordAsync(request.params.email, request.params.password)
+            .addCallback(function(result) {
+                if (result) {
+                    /* TODO: should send the newly updated user back */
+                    response.send(200);
+                } else {
+                    response.send(500);
+                }
+            });
+    } else {
+        /* unauthorized */
+        response.send(403);
+    }
 });
 
 app.del('/users/:id', function(request, response) {
-    Async
-        .chain()
-        .go(parseInt(request.params.id))
-        .next(user.getUserAsync)
-        .next(function(user) { return user.email; })
-        .next(user.deleteUserAsync)
-        .next(function(result) {
-            if (result) {
-                response.send(204);
-            } else {
-                response.send(500);
-            }
-        });
+    if (request.session.user.roles.manager) {
+        Async
+            .chain()
+            .go(parseInt(request.params.id))
+            .next(user.getUserAsync)
+            .next(function(user) { return user.email; })
+            .next(user.deleteUserAsync)
+            .next(function(result) {
+                if (result) {
+                    response.send(204);
+                } else {
+                    response.send(500);
+                }
+            });
+        } else {
+            /* unauthorized */
+            response.send(403);
+        }
 });
 
 app.get('/roles(/:id)?', function(request, response) {
     if (request.header('X-Requested-With') == 'XMLHttpRequest') {
-        // TODO: send JSON
+        if (request.session.user.roles.manager) {
+            if (!request.params.id) {
+                user.role.listRolesAsync()
+                    .addCallback(function(roles) {
+                        if (roles) {
+                            response.send(JSON.stringify(roles));
+                        } else {
+                            response.send(404);
+                        }
+                    });
+            } else {
+                user.getRoleAsync(parseInt(request.params.id))
+                    .addCallback(function(role) {
+                        if (role) {
+                            response.send(JSON.stringify(role));
+                        } else {
+                            response.send(404);
+                        }
+                    });
+            }
+        } else {
+            /* unauthorized */
+            response.send(403);
+        }
     } else {
         response.redirect('/#!/roles/' + (request.params.id || ''));
     }
 });
 
-app.post('/roles/', function(request, response) {});
+app.post('/roles/', function(request, response) {
+    /* lock the roles */
+    response.header('Allow', 'GET');
+    response.send(405);
+});
 
-app.put('/roles/:id', function(request, response) {});
+app.put('/roles/:id', function(request, response) {
+    /* lock the roles */
+    response.header('Allow', 'GET');
+    response.send(405);
+});
 
-app.del('/roles/:id', function(request, response) {});
+app.del('/roles/:id', function(request, response) {
+    /* lock the roles */
+    response.header('Allow', 'GET');
+    response.send(405);
+});
 
 app.get('/products(/:id)?', function(request, response) {
     if (request.header('X-Requested-With') == 'XMLHttpRequest') {
@@ -183,7 +240,6 @@ app.post('/login', function(request, response) {
                 email: email,
                 roles: {}
             };
-            /* TODO: turn this into parallel by using Async */
             Async
                 .collect([
                     function() { return user.role.isUserInRoleAsync(email, 'manager')
