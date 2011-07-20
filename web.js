@@ -99,7 +99,7 @@ app.post('/users/', function(request, response) {
     user.createUserAsync(request.params.username, request.params.password)
         .addCallback(function(result) {
             if (result) {
-                response.send(200);
+                response.send(201);
             } else {
                 response.send(500);
             }
@@ -121,7 +121,7 @@ app.del('/users/:id', function(request, response) {
         .next(user.deleteUserAsync)
         .next(function(result) {
             if (result) {
-                response.send(200);
+                response.send(204);
             } else {
                 response.send(500);
             }
